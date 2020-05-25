@@ -25,27 +25,28 @@ const Home = (props) => {
   const [currentLoc, setCurrentLoc] = useState('');
 
   useEffect(() => {
-      console.log(props.locations)        
-    // Geolocation.watchPosition(
-    //   (info) => {
-    //     const {latitude, longitude} = info.coords;
-    //     const latlngtmp = {latitude: latitude, longitude: longitude};
-    //     setlatlng(latlngtmp);
-    //     axios({
-    //       method: 'get',
-    //       url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=<enter google geocoding key>`,
-    //     })
-    //       .then((response) => {
-    //         setCurrentLoc(response.data.results[0].formatted_address);
-    //         props.addLocation({
-    //           latlng: latlng,
-    //           address: currentLoc,
-    //         });
-    //       })
-    //       .catch((error) => console.log(error));
-    //   },
-    //   (e) => console.log(e),
-    // );
+    if (props.locations.address.length < 30) {
+      Geolocation.watchPosition(
+        (info) => {
+          const {latitude, longitude} = info.coords;
+          const latlngtmp = {latitude: latitude, longitude: longitude};
+          setlatlng(latlngtmp);
+          axios({
+            method: 'get',
+            url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=<enter google geocoding key>`,
+          })
+            .then((response) => {
+              setCurrentLoc(response.data.results[0].formatted_address);
+              props.addLocation({
+                latlng: latlng,
+                address: currentLoc,
+              });
+            })
+            .catch((error) => console.log(error));
+        },
+        (e) => console.log(e),
+      );
+    }
   });
 
   return (
